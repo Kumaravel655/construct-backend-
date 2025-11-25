@@ -60,6 +60,13 @@ class BudgetViewSet(viewsets.ModelViewSet):
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+    
+    def get_queryset(self):
+        queryset = Invoice.objects.all()
+        project_id = self.request.query_params.get('project', None)
+        if project_id:
+            queryset = queryset.filter(project=project_id)
+        return queryset
 
 class EquipmentViewSet(viewsets.ModelViewSet):
     queryset = Equipment.objects.all()
@@ -72,14 +79,22 @@ class SafetyIncidentViewSet(viewsets.ModelViewSet):
 class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communication.objects.all()
     serializer_class = CommunicationSerializer
+
+class MaterialRequestViewSet(viewsets.ModelViewSet):
+    queryset = MaterialRequest.objects.all()
+    serializer_class = MaterialRequestSerializer
+
+class QualityInspectionViewSet(viewsets.ModelViewSet):
+    queryset = QualityInspection.objects.all()
+    serializer_class = QualityInspectionSerializer
+
 from rest_framework import viewsets, permissions
 from .models import *
 from .serializers import *
 
 class IsSiteEngineer(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'site_engineer'
-
+        return request.user.is_authenticated and request.user.role in ['site_engineer', 'project_manager', 'admin']
 
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()

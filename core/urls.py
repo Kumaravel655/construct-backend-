@@ -15,6 +15,8 @@ router.register('invoices', InvoiceViewSet)
 router.register('equipment', EquipmentViewSet)
 router.register('incidents', SafetyIncidentViewSet)
 router.register('communications', CommunicationViewSet)
+router.register('material-requests', MaterialRequestViewSet)
+router.register('quality-inspections', QualityInspectionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
