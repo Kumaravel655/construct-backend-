@@ -42,8 +42,7 @@ django-cors-headers==4.7.0
 django-crispy-forms==1.11.2
 django-minio-storage==0.5.8
 djangorestframework==3.16.0
-djangorestframework_simplejwt==5.5.1
-dlib @ file:///C:/Users/DINESHKUMAR/Downloads/dlib-19.22.99-cp39-cp39-win_amd64.whl-20231129T132951Z-001/dlib-19.22.99-cp39-cp39-win_amd64.whl#sha256=0fd828405c77af2df1ff6a09964a8ba7f14838c538d9017046804f353e9b4bc2
+djangorestframework-simplejwt==5.5.1
 dnspython==2.7.0
 dotenv==0.9.9
 ecapture==2.0.2

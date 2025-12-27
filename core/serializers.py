@@ -93,18 +93,26 @@ class BudgetSerializer(serializers.ModelSerializer):
 class AttendanceSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
     project_name = serializers.CharField(source='project.name', read_only=True)
+    status = serializers.ReadOnlyField()
     
     class Meta:
         model = Attendance
-        fields = '__all__'
-        read_only_fields = ['verified', 'date']
+        fields = ['id', 'user', 'project', 'date', 'check_in_time', 'check_out_time', 'latitude', 'longitude', 
+                 'hours_worked', 'overtime_hours', 'notes', 'user_name', 'project_name', 'status']
+        read_only_fields = ['id', 'date', 'hours_worked', 'overtime_hours']
 
     def create(self, validated_data):
         attendance = Attendance(**validated_data)
-        if attendance.is_within_project_radius():
-            attendance.verified = True
         attendance.save()
         return attendance
+    
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if instance.check_out_time:
+            instance.calculate_hours()
+        return instance
 
 class InvoiceSerializer(serializers.ModelSerializer):
     vendor_name = serializers.CharField(source='vendor.name', read_only=True)

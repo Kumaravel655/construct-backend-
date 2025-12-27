@@ -88,7 +88,9 @@ class QualityInspectionViewSet(viewsets.ModelViewSet):
     queryset = QualityInspection.objects.all()
     serializer_class = QualityInspectionSerializer
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import *
 from .serializers import *
 
@@ -99,7 +101,40 @@ class IsSiteEngineer(permissions.BasePermission):
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    permission_classes = [permissions.IsAuthenticated, IsSiteEngineer]
+    permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        queryset = Attendance.objects.all()
+        user_id = self.request.query_params.get('user', None)
+        project_id = self.request.query_params.get('project', None)
+        
+        if user_id:
+            queryset = queryset.filter(user=user_id)
+        if project_id:
+            queryset = queryset.filter(project=project_id)
+            
+        return queryset.order_by('-created_at')
+
+    @action(detail=False, methods=['post'])
+    def check_in(self, request):
+        data = request.data.copy()
+        data['user'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['patch'])
+    def check_out(self, request, pk=None):
+        try:
+            attendance = self.get_object()
+            if attendance.check_out_time:
+                return Response({'error': 'Already checked out'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            attendance.check_out_time = request.data.get('check_out_time')
+            attendance.calculate_hours()
+            serializer = self.get_serializer(attendance)
+            return Response(serializer.data)
+        except Attendance.DoesNotExist:
+            return Response({'error': 'Attendance record not found'}, status=status.HTTP_404_NOT_FOUND)

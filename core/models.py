@@ -77,22 +77,37 @@ class Attendance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
-    check_in_time = models.TimeField(blank=True, null=True)
+    check_in_time = models.TimeField()
     check_out_time = models.TimeField(blank=True, null=True)
-    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    verified = models.BooleanField(default=False)
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     notes = models.TextField(blank=True)
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_attendance')
+    created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         unique_together = ['user', 'project', 'date']
-
+    
     def __str__(self):
         return f"{self.user.username} - {self.project.name} ({self.date})"
-
+    
+    @property
+    def status(self):
+        return "Complete" if self.check_out_time else "In Progress"
+    
+    def calculate_hours(self):
+        if self.check_in_time and self.check_out_time:
+            from datetime import datetime, timedelta
+            check_in = datetime.combine(self.date, self.check_in_time)
+            check_out = datetime.combine(self.date, self.check_out_time)
+            if check_out < check_in:
+                check_out += timedelta(days=1)
+            total_hours = (check_out - check_in).total_seconds() / 3600
+            self.hours_worked = round(total_hours, 2)
+            self.overtime_hours = max(0, round(total_hours - 8, 2))
+            self.save()
+    
     def is_within_project_radius(self, max_distance_m=100):
         if not self.project.latitude or not self.project.longitude:
             return False
