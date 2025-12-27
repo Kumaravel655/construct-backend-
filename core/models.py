@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from decimal import Decimal
 from math import radians, cos, sin, asin, sqrt
+import os
 
 
 class User(AbstractUser):
@@ -163,6 +164,9 @@ class Task(models.Model):
         return f"{self.task_code} - {self.title}"
 
 
+def document_upload_path(instance, filename):
+    return f'documents/{instance.project.project_code}/{filename}'
+
 class Document(models.Model):
     DOCUMENT_TYPE_CHOICES = [
         ('blueprint', 'Blueprint'),
@@ -180,13 +184,20 @@ class Document(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=True, null=True)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPE_CHOICES, default='other')
     title = models.CharField(max_length=255, default='Untitled Document')
-    filename = models.CharField(max_length=255)
-    file_path = models.CharField(max_length=500, blank=True)
+    file = models.FileField(upload_to=document_upload_path)
     version = models.CharField(max_length=10, default='1.0')
     description = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    
+    @property
+    def filename(self):
+        return self.file.name.split('/')[-1] if self.file else ''
+    
+    @property
+    def file_size(self):
+        return self.file.size if self.file else 0
     
     def __str__(self):
         return f"{self.title} v{self.version}"
