@@ -98,10 +98,15 @@ class IsSiteEngineer(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role in ['site_engineer', 'project_manager', 'admin']
 
+class APIKeyPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        api_key = request.headers.get('X-API-Key')
+        return api_key == 'construct-api-key-2024'
+
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [APIKeyPermission]
 
     def get_queryset(self):
         queryset = Attendance.objects.all()
