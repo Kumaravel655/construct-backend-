@@ -1,0 +1,646 @@
+{
+  "info": {
+    "name": "Complete Construction Management API Testing",
+    "description": "Comprehensive API testing collection for entire construction management system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/auth",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"admin\", \"email\": \"admin@site.com\", \"password\": \"admin123\", \"role\": \"admin\", \"phone\": \"+1111111111\", \"employee_id\": \"ADM001\"}"
+            },
+            "url": {"raw": "{{base_url}}/signup/"}
+          }
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.access);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"admin\", \"password\": \"admin123\"}"
+            },
+            "url": {"raw": "{{base_url}}/login/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users CRUD",
+      "item": [
+        {
+          "name": "Create Project Manager",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"pm1\", \"email\": \"pm@site.com\", \"password\": \"pm123\", \"role\": \"project_manager\", \"employee_id\": \"PM001\"}"
+            },
+            "url": {"raw": "{{base_url}}/users/"}
+          }
+        },
+        {
+          "name": "Create Site Engineer",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"eng1\", \"email\": \"eng@site.com\", \"password\": \"eng123\", \"role\": \"site_engineer\", \"employee_id\": \"ENG001\"}"
+            },
+            "url": {"raw": "{{base_url}}/users/"}
+          }
+        },
+        {
+          "name": "Create Worker",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"worker1\", \"email\": \"worker@site.com\", \"password\": \"work123\", \"role\": \"worker\", \"employee_id\": \"W001\"}"
+            },
+            "url": {"raw": "{{base_url}}/users/"}
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/users/"}
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"phone\": \"+1234567890\", \"department\": \"Engineering\"}"
+            },
+            "url": {"raw": "{{base_url}}/users/2/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects CRUD",
+      "item": [
+        {
+          "name": "Create Commercial Project",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Office Complex\", \"project_code\": \"OC2024\", \"client\": \"ABC Corp\", \"project_manager\": 2, \"project_type\": \"commercial\", \"location\": \"Downtown\", \"latitude\": 40.7128, \"longitude\": -74.0060, \"start_date\": \"2024-03-01\", \"end_date\": \"2024-12-31\", \"total_budget\": 5000000.00}"
+            },
+            "url": {"raw": "{{base_url}}/projects/"}
+          }
+        },
+        {
+          "name": "Create Residential Project",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Apartments\", \"project_code\": \"APT2024\", \"client\": \"XYZ Dev\", \"project_manager\": 2, \"project_type\": \"residential\", \"location\": \"Suburb\", \"start_date\": \"2024-04-01\", \"end_date\": \"2024-11-30\", \"total_budget\": 2500000.00}"
+            },
+            "url": {"raw": "{{base_url}}/projects/"}
+          }
+        },
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/projects/"}
+          }
+        },
+        {
+          "name": "Update Project Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"active\", \"actual_start_date\": \"2024-03-01\"}"
+            },
+            "url": {"raw": "{{base_url}}/projects/1/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks CRUD",
+      "item": [
+        {
+          "name": "Create Foundation Task",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"task_code\": \"T001\", \"title\": \"Foundation Work\", \"description\": \"Excavate and pour foundation\", \"assigned_to\": 3, \"created_by\": 2, \"priority\": \"high\", \"start_date\": \"2024-03-15\", \"due_date\": \"2024-03-30\", \"estimated_hours\": 120.00}"
+            },
+            "url": {"raw": "{{base_url}}/tasks/"}
+          }
+        },
+        {
+          "name": "Create Steel Work Task",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"task_code\": \"T002\", \"title\": \"Steel Frame\", \"description\": \"Install steel frame\", \"assigned_to\": 3, \"created_by\": 2, \"priority\": \"medium\", \"start_date\": \"2024-04-01\", \"due_date\": \"2024-04-30\", \"estimated_hours\": 200.00}"
+            },
+            "url": {"raw": "{{base_url}}/tasks/"}
+          }
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/tasks/"}
+          }
+        },
+        {
+          "name": "Update Task Progress",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"in_progress\", \"progress_percentage\": 50, \"actual_hours\": 60.00}"
+            },
+            "url": {"raw": "{{base_url}}/tasks/1/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendors CRUD",
+      "item": [
+        {
+          "name": "Create Steel Supplier",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Steel Co\", \"vendor_code\": \"SC001\", \"vendor_type\": \"supplier\", \"contact_person\": \"John Steel\", \"email\": \"john@steel.com\", \"phone\": \"+1987654321\", \"address\": \"123 Steel St\", \"rating\": 4.5, \"is_approved\": true}"
+            },
+            "url": {"raw": "{{base_url}}/vendors/"}
+          }
+        },
+        {
+          "name": "Create Concrete Supplier",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Concrete Inc\", \"vendor_code\": \"CI001\", \"vendor_type\": \"supplier\", \"contact_person\": \"Jane Concrete\", \"email\": \"jane@concrete.com\", \"phone\": \"+1555777888\", \"address\": \"456 Concrete Ave\", \"rating\": 4.8, \"is_approved\": true}"
+            },
+            "url": {"raw": "{{base_url}}/vendors/"}
+          }
+        },
+        {
+          "name": "Get All Vendors",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/vendors/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Material Requests CRUD",
+      "item": [
+        {
+          "name": "Create Steel Request",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"request_id\": \"MR001\", \"project\": 1, \"task\": 2, \"requested_by\": 3, \"material_description\": \"Steel beams\", \"quantity\": 50.00, \"unit\": \"pieces\", \"estimated_cost\": 25000.00, \"urgency\": \"high\", \"required_date\": \"2024-04-01\"}"
+            },
+            "url": {"raw": "{{base_url}}/material-requests/"}
+          }
+        },
+        {
+          "name": "Create Concrete Request",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"request_id\": \"MR002\", \"project\": 1, \"task\": 1, \"requested_by\": 3, \"material_description\": \"Concrete mix\", \"quantity\": 100.00, \"unit\": \"cubic yards\", \"estimated_cost\": 15000.00, \"urgency\": \"high\", \"required_date\": \"2024-03-20\"}"
+            },
+            "url": {"raw": "{{base_url}}/material-requests/"}
+          }
+        },
+        {
+          "name": "Get All Material Requests",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/material-requests/"}
+          }
+        },
+        {
+          "name": "Approve Material Request",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"approved\", \"approved_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/material-requests/1/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchase Orders CRUD",
+      "item": [
+        {
+          "name": "Create Steel PO",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"po_number\": \"PO001\", \"vendor\": 1, \"project\": 1, \"requested_by\": 2, \"description\": \"Steel beams\", \"total_amount\": 25000.00, \"tax_amount\": 2500.00, \"order_date\": \"2024-03-01\", \"expected_delivery_date\": \"2024-03-20\"}"
+            },
+            "url": {"raw": "{{base_url}}/purchaseorders/"}
+          }
+        },
+        {
+          "name": "Create Concrete PO",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"po_number\": \"PO002\", \"vendor\": 2, \"project\": 1, \"requested_by\": 2, \"description\": \"Concrete mix\", \"total_amount\": 15000.00, \"tax_amount\": 1500.00, \"order_date\": \"2024-03-05\", \"expected_delivery_date\": \"2024-03-18\"}"
+            },
+            "url": {"raw": "{{base_url}}/purchaseorders/"}
+          }
+        },
+        {
+          "name": "Get All Purchase Orders",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/purchaseorders/"}
+          }
+        },
+        {
+          "name": "Approve PO",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"approved\", \"approved_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/purchaseorders/1/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Budgets CRUD",
+      "item": [
+        {
+          "name": "Create Materials Budget",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"category\": \"materials\", \"description\": \"Materials budget\", \"allocated_amount\": 2000000.00, \"spent_amount\": 500000.00, \"committed_amount\": 800000.00, \"fiscal_year\": 2024, \"created_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/budgets/"}
+          }
+        },
+        {
+          "name": "Create Labor Budget",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"category\": \"labor\", \"description\": \"Labor budget\", \"allocated_amount\": 2500000.00, \"spent_amount\": 600000.00, \"committed_amount\": 1000000.00, \"fiscal_year\": 2024, \"created_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/budgets/"}
+          }
+        },
+        {
+          "name": "Get All Budgets",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/budgets/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipment CRUD",
+      "item": [
+        {
+          "name": "Create Excavator",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"equipment_id\": \"EQ001\", \"name\": \"Excavator CAT 320\", \"category\": \"Heavy Machinery\", \"model\": \"CAT 320\", \"serial_number\": \"CAT001\", \"purchase_cost\": 250000.00, \"status\": \"available\"}"
+            },
+            "url": {"raw": "{{base_url}}/equipment/"}
+          }
+        },
+        {
+          "name": "Create Crane",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"equipment_id\": \"EQ002\", \"name\": \"Tower Crane\", \"category\": \"Lifting\", \"model\": \"TC-200\", \"serial_number\": \"TC001\", \"purchase_cost\": 500000.00, \"status\": \"available\"}"
+            },
+            "url": {"raw": "{{base_url}}/equipment/"}
+          }
+        },
+        {
+          "name": "Get All Equipment",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/equipment/"}
+          }
+        },
+        {
+          "name": "Assign Equipment",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"in_use\", \"current_project\": 1, \"assigned_to\": 3}"
+            },
+            "url": {"raw": "{{base_url}}/equipment/1/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Safety Incidents CRUD",
+      "item": [
+        {
+          "name": "Report Minor Incident",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"incident_id\": \"INC001\", \"project\": 1, \"title\": \"Minor Cut\", \"description\": \"Small cut on hand\", \"severity\": \"minor\", \"location_details\": \"Foundation area\", \"injured_person\": \"Worker1\", \"reported_by\": 3}"
+            },
+            "url": {"raw": "{{base_url}}/incidents/"}
+          }
+        },
+        {
+          "name": "Report Major Incident",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"incident_id\": \"INC002\", \"project\": 1, \"title\": \"Equipment Failure\", \"description\": \"Crane malfunction\", \"severity\": \"major\", \"location_details\": \"Crane area\", \"reported_by\": 3}"
+            },
+            "url": {"raw": "{{base_url}}/incidents/"}
+          }
+        },
+        {
+          "name": "Get All Incidents",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/incidents/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quality Inspections CRUD",
+      "item": [
+        {
+          "name": "Schedule Foundation Inspection",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"inspection_id\": \"QI001\", \"project\": 1, \"task\": 1, \"inspector\": 3, \"inspection_type\": \"Foundation Check\", \"scheduled_date\": \"2024-03-25\", \"checklist_items\": \"Check concrete strength\\nVerify dimensions\"}"
+            },
+            "url": {"raw": "{{base_url}}/quality-inspections/"}
+          }
+        },
+        {
+          "name": "Complete Inspection",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"passed\", \"actual_date\": \"2024-03-25\", \"observations\": \"All good\", \"score\": 95}"
+            },
+            "url": {"raw": "{{base_url}}/quality-inspections/1/"}
+          }
+        },
+        {
+          "name": "Get All Inspections",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/quality-inspections/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Communications CRUD",
+      "item": [
+        {
+          "name": "Send Progress Update",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"sender\": 2, \"receivers\": [1, 3], \"project\": 1, \"task\": 1, \"message_type\": \"progress_update\", \"subject\": \"Foundation Progress\", \"message\": \"Foundation work 50% complete\"}"
+            },
+            "url": {"raw": "{{base_url}}/communications/"}
+          }
+        },
+        {
+          "name": "Send Safety Alert",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"sender\": 1, \"receivers\": [2, 3], \"project\": 1, \"message_type\": \"safety_alert\", \"subject\": \"PPE Required\", \"message\": \"All workers must wear hard hats\"}"
+            },
+            "url": {"raw": "{{base_url}}/communications/"}
+          }
+        },
+        {
+          "name": "Get All Communications",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/communications/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance CRUD",
+      "item": [
+        {
+          "name": "Clock In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"check_in_time\": \"08:00:00\", \"latitude\": 40.7128, \"longitude\": -74.0060, \"notes\": \"Starting work\"}"
+            },
+            "url": {"raw": "{{base_url}}/attendance/"}
+          }
+        },
+        {
+          "name": "Clock Out",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"check_out_time\": \"17:00:00\"}"
+            },
+            "url": {"raw": "{{base_url}}/attendance/1/"}
+          }
+        },
+        {
+          "name": "Get All Attendance",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/attendance/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices CRUD",
+      "item": [
+        {
+          "name": "Create Steel Invoice",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"invoice_number\": \"INV001\", \"vendor\": 1, \"purchase_order\": 1, \"project\": 1, \"description\": \"Steel delivery\", \"subtotal\": 25000.00, \"tax_amount\": 2500.00, \"total_amount\": 27500.00, \"invoice_date\": \"2024-03-20\", \"due_date\": \"2024-04-20\"}"
+            },
+            "url": {"raw": "{{base_url}}/invoices/"}
+          }
+        },
+        {
+          "name": "Approve Invoice",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"approved\", \"approved_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/invoices/1/"}
+          }
+        },
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/invoices/"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents CRUD",
+      "item": [
+        {
+          "name": "Upload Blueprint",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"project\": 1, \"task\": 1, \"document_type\": \"blueprint\", \"title\": \"Foundation Blueprint\", \"version\": \"1.0\", \"description\": \"Foundation design\", \"uploaded_by\": 2}"
+            },
+            "url": {"raw": "{{base_url}}/documents/"}
+          }
+        },
+        {
+          "name": "Get All Documents",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/documents/"}
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -127,12 +127,15 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['patch'])
     def check_out(self, request, pk=None):
+        from datetime import datetime
         try:
             attendance = self.get_object()
             if attendance.check_out_time:
                 return Response({'error': 'Already checked out'}, status=status.HTTP_400_BAD_REQUEST)
             
-            attendance.check_out_time = request.data.get('check_out_time')
+            check_out_time_str = request.data.get('check_out_time')
+            if check_out_time_str:
+                attendance.check_out_time = datetime.strptime(check_out_time_str, '%H:%M:%S').time()
             attendance.calculate_hours()
             serializer = self.get_serializer(attendance)
             return Response(serializer.data)
